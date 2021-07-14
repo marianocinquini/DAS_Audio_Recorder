@@ -10,6 +10,7 @@ import numpy as np
 import msvcrt
 from scipy import signal
 import matplotlib.pyplot as plt
+from queue import Queue
 
 import matplotlib
 matplotlib.use('qt5agg')
@@ -64,7 +65,8 @@ class RecordingFile(object):
         self._pa = pyaudio.PyAudio()
         self.wavefile = self._prepare_file(self.fname, self.mode)
         self._stream = None
-
+        self.q = Queue(maxsize=100)
+        
     def __enter__(self):
         return self
 
@@ -108,8 +110,8 @@ class RecordingFile(object):
 
     def get_callback(self):
         def callback(in_data, frame_count, time_info, status):
-            self.wavefile.writeframes(in_data)
-                    
+            # self.wavefile.writeframes(in_data)
+            self.q.put(in_data)
             
             return in_data, pyaudio.paContinue
         return callback
@@ -222,7 +224,7 @@ with rec.open(estampa2, 'wb') as recfile2:
     time.sleep(0.2)
     
         
-    proc=wave.open(estampa2,'rb')
+    # proc=wave.open(estampa2,'rb')
     
 #    recfile2.stop_recording()
 ##   recfile2.record(1)
