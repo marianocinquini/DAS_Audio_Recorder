@@ -37,6 +37,8 @@ ruta= "C:/Users/maria/Documents/DIIV/Python/piddef 02-18 rugged_laptop/datos/"
 
 preamp_resp=np.loadtxt('preamp2_gain.txt')
 preamp_resp=np.append(preamp_resp, [[0, 1e-30], 0)
+func_interp_preamp=interp1d(preamp_resp[:,0], preamp_resp[:,1])
+
 
 t1=np.linspace(0,duracion-1/fs,time_window)
 
@@ -266,11 +268,10 @@ while 1:
                                             nfft=cant_fft)#nfft=int(segmento_proc.shape[0]/20))
             
 
-            func_interp=interp1d(preamp_resp[:,0], preamp_resp[:,1])
-            
+                  
             
             Sxx=np.roll(Sxx,-Sxx_aux.shape[1],1)
-            Sxx[:,-Sxx_aux.shape[1]:]=Sxx_aux
+            Sxx[:,-Sxx_aux.shape[1]:]=Sxx_aux*(func_interp_preamp(f_aux))**(-2)
         #        
             
             
@@ -280,7 +281,7 @@ while 1:
                                                 noverlap=0)
             
             
-            ydata3=10*np.log10(Pxx)+factor_pres
+            ydata3=10*np.log10(Pxx)+factor_pres-(20*np.log10(func_interp_preamp(f_welch))*preamp_sens_ok)
             
             
             
