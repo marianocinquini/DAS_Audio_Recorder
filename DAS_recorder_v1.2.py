@@ -36,7 +36,7 @@ Deltaf=10
 ruta= "C:/Users/maria/Documents/DIIV/Python/piddef 02-18 rugged_laptop/datos/"
 
 preamp_resp=np.loadtxt('preamp2_gain.txt')
-preamp_resp=np.append(preamp_resp, [[0, 1e-30], 0)
+preamp_resp=np.append(preamp_resp, [[0, 1e-30]], 0)
 func_interp_preamp=interp1d(preamp_resp[:,0], preamp_resp[:,1])
 
 
@@ -219,7 +219,7 @@ while 1:
                     pa.terminate()
                     done = True
 
-                if tecla = b't':
+                if tecla == b't':
 
                     if ch==0:
                         ch=1
@@ -256,7 +256,7 @@ while 1:
             segmento=segmento.reshape(int(segmento.shape[0]/2),2)
             segmento_proc[0:-segmento.shape[0]]=segmento_proc[segmento.shape[0]:]       
             segmento_proc[-segmento.shape[0]:,0]=segmento[:,ch]
-            ydata1=segmento_proc[:,0]*factor_amp*10^(preamp_sens*preamp_sens_ok/20)
+            ydata1=segmento_proc[:,0]*factor_amp*10**(preamp_sens*preamp_sens_ok/20)
         #        ydata1=segmento
             
         #        
@@ -271,7 +271,7 @@ while 1:
                   
             
             Sxx=np.roll(Sxx,-Sxx_aux.shape[1],1)
-            Sxx[:,-Sxx_aux.shape[1]:]=Sxx_aux*(func_interp_preamp(f_aux))**(-2)
+            Sxx[:,-Sxx_aux.shape[1]:]=Sxx_aux*(func_interp_preamp(f_aux))**(-2*preamp_sens_ok)
         #        
             
             
